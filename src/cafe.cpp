@@ -2,6 +2,49 @@
 #include <vector>
 using namespace std;
 
+/*
+    CHECK LIST:
+    [x] Class and objects
+    [x] Attribute property and Method behavior
+    [x] Constructor
+    [x] Setter & Getter
+    [-] Encapsulation
+    [-] Inheritance
+    [-] Overriding
+    [+] Access Modifier / Visibility
+    [-] Polymorphism
+    [-] Abstraction
+*/
+
+class recipe {
+    private:
+        string name;
+        vector<pair<string, int>> ingredients;
+    public:
+        recipe(string name) {
+            this->name = name;
+        }
+
+        void show_recipe(){
+            for (int i = 0; i < ingredients.size(); i++)
+            cout << ingredients[i].first << ": "
+                 << ingredients[i].second << endl;
+        }
+
+        void create_recipe(string ingredient, int quantity) {
+            ingredients.push_back(make_pair(ingredient, quantity));
+        }
+
+        void update_recipe(string ingredient, int quantity) {
+            for (int i = 0; i < ingredients.size(); i++)
+            if (ingredients[i].first == ingredient) {
+                ingredients[i].second = quantity;
+                break;
+            }
+        }
+};
+
+
 // Class to keep track of items in stock
 class inventory {
     private:
