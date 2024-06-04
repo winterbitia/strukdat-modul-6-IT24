@@ -36,6 +36,17 @@ class inventory {
             }
         }
 
+        // Find item in inventory
+        void find_item(string item) {
+            for (int i = 0; i < items.size(); i++)
+            if (items[i].first == item) {
+                cout << items[i].first << ": "
+                     << items[i].second << endl;
+                return;
+            }
+            cout << "Item not found" << endl;
+        }
+
         // List items in inventory
         void print_inventory() {
             // Loop through items vector
@@ -45,50 +56,57 @@ class inventory {
                  << items[i].second << endl;
             cout << endl;
         }
+
 };
 
-void inputloop(inventory &inv) {
+void loop_inv(inventory &inv) {
     // Print menu
-    cout << "1. Add item" << endl;
-    cout << "2. Remove item" << endl;
-    cout << "3. List inventory" << endl;
-    cout << "4. Exit" << endl;
-    cout << "Enter choice: ";
+    cout << "1. Add item" << endl
+         << "2. Find item" << endl
+         << "3. Remove item" << endl
+         << "4. Print inventory" << endl
+         << "5. Exit" << endl;
 
     // Get user input
     int choice;
     cin >> choice;
 
-    // Perform action based on choice
+    // Perform action based on user input
     switch (choice) {
         case 1: {
             // Add item
+            string item; int quantity;
             cout << "Enter item name: ";
-            string item;
             cin >> item;
             cout << "Enter quantity: ";
-            int quantity;
             cin >> quantity;
             inv.add_item(item, quantity);
             break;
         }
         case 2: {
-            // Remove item
-            cout << "Enter item name: ";
+            // Find item
             string item;
+            cout << "Enter item name: ";
+            cin >> item;
+            inv.find_item(item);
+            break;
+        }
+        case 3: {
+            // Remove item
+            string item; int quantity;
+            cout << "Enter item name: ";
             cin >> item;
             cout << "Enter quantity: ";
-            int quantity;
             cin >> quantity;
             inv.remove_item(item, quantity);
             break;
         }
-        case 3: {
+        case 4: {
             // List inventory
             inv.print_inventory();
             break;
         }
-        case 4: {
+        case 5: {
             // Exit
             return;
         }
@@ -98,13 +116,13 @@ void inputloop(inventory &inv) {
             break;
         }
     }
-    inputloop(inv);
+    loop_inv(inv);
 }
 
 int main() {
     // Create inventory object
     inventory inv;
-    inputloop(inv);
+    loop_inv(inv);
 
     return 0;
 }
