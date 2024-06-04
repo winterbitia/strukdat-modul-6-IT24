@@ -16,6 +16,37 @@ using namespace std;
     [+] Polymorphism
 */
 
+// Item object class
+class item {
+    private:
+        // Item details are hidden
+        int quantity;
+
+    public:
+        // Item name
+        string name;
+
+        // Item constructor
+        item(string name, int quantity) {
+            this->name = name;
+            this->quantity = quantity;
+        }
+
+        // Item quantity setters
+        void add(int q) {
+            quantity += q;
+        }
+        void remove(int q) {
+            quantity -= q;
+        }
+
+        // Item details getter
+        int get_quantity() {
+            return quantity;
+        }
+};
+
+
 // Recipe object class
 class recipe {
     private:
@@ -33,7 +64,7 @@ class recipe {
         }
 
         // Recipe details setter
-        void update_recipe(vector<pair<string, int>> ingredients) {
+        void update(vector<pair<string, int>> ingredients) {
             this->ingredients = ingredients;
         }
 
@@ -47,13 +78,13 @@ class recipe {
 class inventory {
     private:
         // Data abstraction for items and recipes
-        vector<pair<string, int>> items;
+        vector<class::item> items;
         vector<class::recipe> recipes;
 
         // Control abstraction for index finding
         int find_item_index(string item) {
             for (int i = 0; i < items.size(); i++)
-            if (items[i].first == item)
+            if (items[i].name == item)
             return i;
             return -1;
         }
@@ -70,72 +101,73 @@ class inventory {
         //===================//
 
         // Add item quantity to inventory
-        void add_item(string item, int quantity) {
+        void add_item(string name, int quantity) {
             // Check if item is already in inventory
-            if (find_item_index(item) != -1){
-                items[find_item_index(item)].second += quantity;
+            if (find_item_index(name) != -1){
+                items[find_item_index(name)].add(quantity);
                 return;
             }
 
             // If item is not found
-            items.push_back(make_pair(item, quantity)); // Push pair
+            items.push_back(item(name, quantity)); // Push item object
         }
 
+        // TODO: ADD A MULTI-ADD INPUT
         // Add multiple items to inventory
-        void add_item(vector<pair<string, int>> items) {
+        void add_item(vector<pair<string, int>> input) {
             // Loop through input items
-            for (int i = 0; i < items.size(); i++)
+            for (int i = 0; i < input.size(); i++)
             // Check if item is already in inventory
-            if (find_item_index(items[i].first) != -1)
-                items[find_item_index(items[i].first)].second += items[i].second;
+            if (find_item_index(input[i].first) != -1)
+                items[find_item_index(input[i].first)].add(input[i].second);
             else
-                items.push_back(items[i]); // Push pair
+                items.push_back(item(input[i].first, input[i].second)); // Push item object
         }
 
         // Check item from inventory
-        bool check_item(string item, int quantity) {
+        bool check_item(string name, int quantity) {
             // Check if item is already in inventory
-            if (find_item_index(item) != -1){
-                if (items[find_item_index(item)].second < quantity) 
+            if (find_item_index(name) != -1){
+                if (items[find_item_index(name)].get_quantity() < quantity) 
                     return false;
                 return true;
             }
             return false;
         }
 
+        // TODO: ADD A MULTI-DELETE INPUT
         // Remove item from inventory
         void remove_item(string item, int quantity) {
             // Check if item is already in inventory
             if (find_item_index(item) != -1){
-                if (items[find_item_index(item)].second < quantity) {
+                if (items[find_item_index(item)].get_quantity() < quantity) {
                     cout << "Not enough quantity" << endl;
                     return;
                 }
-                if (items[find_item_index(item)].second == quantity) {
+                if (items[find_item_index(item)].get_quantity() == quantity) {
                     items.erase(items.begin() + find_item_index(item));
                     return;
-                } 
-                items[find_item_index(item)].second -= quantity;
+                }
+                items[find_item_index(item)].remove(quantity);
                 return;
             }
         }
 
         // Remove multiple items from inventory
-        void remove_item(vector<pair<string, int>> items) {
+        void remove_item(vector<pair<string, int>> input) {
             // Loop through input items
-            for (int i = 0; i < items.size(); i++)
-
+            for (int i = 0; i < input.size(); i++)
             // Check if item is already in inventory
-            if (find_item_index(items[i].first) != -1)
-            if (items[find_item_index(items[i].first)].second < items[i].second) {
-                cout << "Not enough quantity" << endl;
-                return;
-
-            } else if (items[find_item_index(items[i].first)].second == items[i].second) {
-                items.erase(items.begin() + find_item_index(items[i].first));
-
-            } else {
-                items[find_item_index(items[i].first)].second -= items[i].second;
+            if (find_item_index(input[i].first) != -1){
+                if (items[find_item_index(input[i].first)].get_quantity() < input[i].second) {
+                    cout << "Not enough quantity" << endl;
+                    return;
+                }
+                if (items[find_item_index(input[i].first)].get_quantity() == input[i].second) {
+                    items.erase(items.begin() + find_item_index(input[i].first));
+                    return;
+                }
+                items[find_item_index(input[i].first)].remove(input[i].second);
             }
         }
 
@@ -143,10 +175,12 @@ class inventory {
         void show_item(string item) {
             // Check if item is already in inventory
             if (find_item_index(item) != -1){
-                cout << item << ": "
-                     << items[find_item_index(item)].second << endl;
+                cout << "Item: " << item << endl
+                     << "Quantity: " << items[find_item_index(item)].get_quantity() << endl;
                 return;
             }
+
+            // If item is not found
             cout << "Item not found" << endl;
         }
 
@@ -155,8 +189,8 @@ class inventory {
             // Loop through items vector
             cout << "Inventory:" << endl;
             for (int i = 0; i < items.size(); i++)
-            cout << items[i].first << ": "
-                 << items[i].second << endl;
+                cout << items[i].name << ": "
+                     << items[i].get_quantity() << endl;
             cout << endl;
         }
 
@@ -180,7 +214,7 @@ class inventory {
         void update_recipe(string name, vector<pair<string, int>> ingredients) {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
-                recipes[find_recipe_index(name)].update_recipe(ingredients);
+                recipes[find_recipe_index(name)].update(ingredients);
                 return;
             }
 
