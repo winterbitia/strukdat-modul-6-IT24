@@ -20,25 +20,25 @@ using namespace std;
 class recipe {
     private:
         // Recipe details are hidden
-        vector<pair<string, int>> ingredients;
+        vector<pair<string, int> > ingredients;
 
     public:
         // Recipe name
         string name;
 
         // Recipe constructor
-        recipe(string name, vector<pair<string, int>> ingredients) {
+        recipe(string name, vector<pair<string, int> > ingredients) {
             this->name = name;
             this->ingredients = ingredients;
         }
 
-        // Recipe details setter
-        void update_recipe(vector<pair<string, int>> ingredients) {
+        // Recipe details setterå
+        void update_recipe(vector<pair<string, int> > ingredients) {
             this->ingredients = ingredients;
         }
 
         // Recipe details getter
-        vector<pair<string, int>> get_recipe() {
+        vector<pair<string, int> > get_recipe() {
             return ingredients;
         }
 };
@@ -47,7 +47,7 @@ class recipe {
 class inventory {
     private:
         // Data abstraction for items and recipes
-        vector<pair<string, int>> items;
+        vector<pair<string, int> > items;
         vector<class::recipe> recipes;
 
         // Control abstraction for index finding
@@ -82,7 +82,7 @@ class inventory {
         }
 
         // Add multiple items to inventory
-        void add_item(vector<pair<string, int>> items) {
+        void add_item(vector<pair<string, int> > items) {
             // Loop through input items
             for (int i = 0; i < items.size(); i++)
             // Check if item is already in inventory
@@ -121,22 +121,21 @@ class inventory {
         }
 
         // Remove multiple items from inventory
-        void remove_item(vector<pair<string, int>> items) {
+        void remove_item(vector<pair<string, int> > items) {
             // Loop through input items
-            for (int i = 0; i < items.size(); i++)
-
+             for (int i = 0; i < items.size(); i++) {
             // Check if item is already in inventory
-            if (find_item_index(items[i].first) != -1)
-            if (items[find_item_index(items[i].first)].second < items[i].second) {
-                cout << "Not enough quantity" << endl;
-                return;
-
-            } else if (items[find_item_index(items[i].first)].second == items[i].second) {
-                items.erase(items.begin() + find_item_index(items[i].first));
-
-            } else {
-                items[find_item_index(items[i].first)].second -= items[i].second;
-            }
+             if (find_item_index(items[i].first) != -1) {
+                     if (items[find_item_index(items[i].first)].second < items[i].second) {
+                             cout << "Not enough quantity" << endl;
+                         return;
+                     } else if (items[find_item_index(items[i].first)].second == items[i].second) {
+                         items.erase(items.begin() + find_item_index(items[i].first));
+                     } else {
+                         items[find_item_index(items[i].first)].second -= items[i].second;
+                     }
+                }
+             }
         }
 
         // Show item from inventory
@@ -165,7 +164,7 @@ class inventory {
         //================//
 
         // Create recipe
-        void create_recipe(string name, vector<pair<string, int>> ingredients) {
+        void create_recipe(string name, vector<pair<string, int> > ingredients) {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
                 cout << "Recipe already exists" << endl;
@@ -177,7 +176,7 @@ class inventory {
         }
 
         // Update recipe
-        void update_recipe(string name, vector<pair<string, int>> ingredients) {
+        void update_recipe(string name, vector<pair<string, int> > ingredients) {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
                 recipes[find_recipe_index(name)].update_recipe(ingredients);
@@ -205,7 +204,7 @@ class inventory {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
                 cout << "Recipe: " << name << endl;
-                vector<pair<string, int>> ingredients = recipes[find_recipe_index(name)].get_recipe();
+                vector<pair<string, int> > ingredients = recipes[find_recipe_index(name)].get_recipe();
                 
                 // Loop through ingredients vector
                 for (int i = 0; i < ingredients.size(); i++)
@@ -223,7 +222,7 @@ class inventory {
         void use_recipe(string name) {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
-                vector<pair<string, int>> ingredients = recipes[find_recipe_index(name)].get_recipe();
+                vector<pair<string, int> > ingredients = recipes[find_recipe_index(name)].get_recipe();
                 
                 // Check if enough ingredients are available
                 for (int i = 0; i < ingredients.size(); i++)
@@ -327,7 +326,7 @@ void loop_recipe(inventory &inv) {
             cin >> name;
             cout << "Enter number of ingredients: ";
             cin >> n;
-            vector<pair<string, int>> ingredients;
+            vector<pair<string, int> > ingredients;
             for (int i = 0; i < n; i++) {
                 string item; int quantity;
                 cout << "Enter item name: ";
@@ -354,7 +353,7 @@ void loop_recipe(inventory &inv) {
             cin >> name;
             cout << "Enter number of ingredients: ";
             cin >> n;
-            vector<pair<string, int>> ingredients;
+            vector<pair<string, int> > ingredients;
             for (int i = 0; i < n; i++) {
                 string item; int quantity;
                 cout << "Enter item name: ";
