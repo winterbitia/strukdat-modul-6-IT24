@@ -261,9 +261,10 @@ class inventory {
                 
                 // Check if enough ingredients are available
                 for (int i = 0; i < ingredients.size(); i++)
-                if (!check_item(ingredients[i].first, ingredients[i].second))
+                if (!check_item(ingredients[i].first, ingredients[i].second)){
                     cout << "Not enough ingredients" << endl;
                     return;
+                }
 
                 // If enough ingredients are available
                 for (int i = 0; i < ingredients.size(); i++)
