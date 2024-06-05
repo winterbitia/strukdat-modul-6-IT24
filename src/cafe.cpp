@@ -175,7 +175,7 @@ class inventory {
         void show_item(string item) {
             // Check if item is already in inventory
             if (find_item_index(item) != -1){
-                cout << "Item: " << item << endl
+                cout << "\nITEM: " << item << endl
                      << "Quantity: " << items[find_item_index(item)].get_quantity() << endl;
                 return;
             }
@@ -187,7 +187,7 @@ class inventory {
         // List items from inventory
         void print_items() {
             // Loop through items vector
-            cout << "Inventory:" << endl;
+            cout << "\nINVENTORY:" << endl;
             for (int i = 0; i < items.size(); i++)
                 cout << items[i].name << ": "
                      << items[i].get_quantity() << endl;
@@ -208,6 +208,14 @@ class inventory {
 
             // If recipe is not found
             recipes.push_back(recipe(name, ingredients)); // Push recipe object
+        }
+
+        // Check recipe
+        bool check_recipe(string name) {
+            // Check if recipe is in inventory
+            if (find_recipe_index(name) != -1)
+                return true;
+            return false;
         }
 
         // Update recipe
@@ -238,7 +246,7 @@ class inventory {
         void show_recipe(string name) {
             // Check if recipe is in inventory
             if (find_recipe_index(name) != -1){
-                cout << "Recipe: " << name << endl;
+                cout << "\nRECIPE: " << name << endl;
                 vector<pair<string, int> > ingredients = recipes[find_recipe_index(name)].get_recipe();
                 
                 // Loop through ingredients vector
@@ -269,6 +277,7 @@ class inventory {
                 // If enough ingredients are available
                 for (int i = 0; i < ingredients.size(); i++)
                     remove_item(ingredients[i].first, ingredients[i].second);
+                cout << "Recipe " << name << " used" << endl;
                 return;
             }
 
@@ -282,51 +291,112 @@ void loop_inv(inventory &inv) {
     // Print menu
     cout << "\nINVENTORY DASHBOARD" << endl
          << "1. Add item" << endl
-         << "2. Search item" << endl
+         << "2. Multi-add item" << endl
          << "3. Remove item" << endl
-         << "4. Print inventory" << endl
-         << "5. Exit" << endl;
+         << "4. Multi-remove item" << endl
+         << "5. Find item" << endl
+         << "6. List inventory" << endl
+         << "0. Exit" << endl;
 
     // Get user input
+    cout << "> ";
     int choice;
     cin >> choice;
+    cout << endl;
 
     // Perform action based on user input
     switch (choice) {
         case 1: {
             // Add item
             string item; int quantity;
-            cout << "Enter item name: ";
-            cin >> item;
-            cout << "Enter quantity: ";
-            cin >> quantity;
+            cout << "[!] Enter item name & quanity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "> ";
+            cin >> item >> quantity;
             inv.add_item(item, quantity);
             break;
         }
         case 2: {
-            // Find item
-            string item;
-            cout << "Enter item name: ";
-            cin >> item;
-            inv.show_item(item);
+            // Multi-add item
+            string item; int quantity;
+            cout << "[!] Enter item name & quanity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "  Enter 'exit' to stop" << endl
+                 << "Example: " << endl
+                 << "  sugar 50" << endl
+                 << "  exit" << endl;
+
+            // Creates vector for items
+            vector<pair<string, int> > items;
+            while(1) {
+                // Loops until user enters 'exit'
+                cout << "> ";
+                cin >> item;
+                if (item == "exit") break;
+                cin >> quantity;
+
+                // Pushes item to vector
+                items.push_back(make_pair(item, quantity));
+            }
+
+            // Adds items to inventory
+            inv.add_item(items);
             break;
         }
         case 3: {
             // Remove item
             string item; int quantity;
-            cout << "Enter item name: ";
-            cin >> item;
-            cout << "Enter quantity: ";
-            cin >> quantity;
+            cout << "[!] Enter item name & quanity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "> ";
+            cin >> item >> quantity;
             inv.remove_item(item, quantity);
             break;
         }
         case 4: {
+            // Multi-remove item
+            string item; int quantity;
+
+            // Instructions for user
+            cout << "[!] Enter item name & quanity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "  Enter 'exit' to stop" << endl
+                 << "Example: " << endl
+                 << "  sugar 50" << endl
+                 << "  exit" << endl;
+
+            // Creates vector for items
+            vector<pair<string, int> > items;
+            while (1) {
+                // Loops until user enters 'exit'
+                cout << "> ";
+                cin >> item;
+                if (item == "exit") break;
+                cin >> quantity;
+
+                // Pushes item to vector
+                items.push_back(make_pair(item, quantity));
+            }
+
+            // Removes items from inventory
+            inv.remove_item(items);
+            break;
+        }
+        case 5: {
+            // Find item
+            string item;
+            cout << "[!] Enter item name" << endl
+                 << "> ";
+            cin >> item;
+            inv.show_item(item);
+            break;
+        }
+        case 6: {
             // List inventory
             inv.print_items();
             break;
         }
-        case 5: {
+        case 0: {
             // Exit
             return;
         }
@@ -343,68 +413,105 @@ void loop_recipe(inventory &inv) {
     // Print menu
     cout << "\nRECIPE DASHBOARD" << endl
          << "1. Create recipe" << endl
-         << "2. Search recipe" << endl
-         << "3. Update recipe" << endl
+         << "2. Update recipe" << endl
+         << "3. Search recipe" << endl
          << "4. Remove recipe" << endl
          << "5. Use recipe" << endl
-         << "6. Exit" << endl;
+         << "6. List inventory" << endl
+         << "0. Exit" << endl;
 
     // Get user input
+    cout << "> ";
     int choice;
     cin >> choice;
+    cout << endl;
 
     // Perform action based on user input
     switch (choice) {
         case 1: {
             // Create recipe
-            string name; int n;
-            cout << "Enter recipe name: ";
+            string name, item; int quantity;
+            cout << "[!] Enter recipe name" << endl
+                 << "> ";
             cin >> name;
-            cout << "Enter number of ingredients: ";
-            cin >> n;
+
+            // Instructions for users
+            cout << "[!] Enter item name & quantity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "  Enter 'exit' to stop" << endl
+                 << "Example: " << endl
+                 << "  sugar 50" << endl
+                 << "  exit" << endl;
+
+            // Creates vector for ingredients
             vector<pair<string, int> > ingredients;
-            for (int i = 0; i < n; i++) {
-                string item; int quantity;
-                cout << "Enter item name: ";
+            while (1) {
+                // Loops until user enters 'exit'
+                cout << "> ";
                 cin >> item;
-                cout << "Enter quantity: ";
+                if (item == "exit") break;
                 cin >> quantity;
+
+                // Pushes item to vector
                 ingredients.push_back(make_pair(item, quantity));
             }
+
+            // Creates recipe
             inv.create_recipe(name, ingredients);
             break;
         }
         case 2: {
-            // Find recipe
-            string name;
-            cout << "Enter recipe name: ";
+            // Update recipe
+            string name, item; int quantity;
+            cout << "[!] Enter recipe name" << endl
+                 << "> ";
             cin >> name;
-            inv.show_recipe(name);
+
+            // Check if recipe exists
+            if (!inv.check_recipe(name)) {
+                cout << "Recipe not found" << endl;
+                break;
+            }
+
+            // Instructions for users
+            cout << "[!] Enter item name & quantity" << endl
+                 << "  Syntax: <item_name> <quantity>" << endl
+                 << "  Enter 'exit' to stop" << endl
+                 << "Example: " << endl
+                 << "  sugar 50" << endl
+                 << "  exit" << endl;
+
+            // Creates vector for ingredients
+            vector<pair<string, int> > ingredients;
+            while (1) {
+                // Loops until user enters 'exit'
+                cout << "> ";
+                cin >> item;
+                if (item == "exit") break;
+                cin >> quantity;
+
+                // Pushes item to vector
+                ingredients.push_back(make_pair(item, quantity));
+            }
+
+            // Updates recipe
+            inv.update_recipe(name, ingredients);
             break;
         }
         case 3: {
-            // Update recipe
-            string name; int n;
-            cout << "Enter recipe name: ";
+            // Find recipe
+            string name;
+            cout << "[!] Enter recipe name" << endl
+                 << "> ";
             cin >> name;
-            cout << "Enter number of ingredients: ";
-            cin >> n;
-            vector<pair<string, int> > ingredients;
-            for (int i = 0; i < n; i++) {
-                string item; int quantity;
-                cout << "Enter item name: ";
-                cin >> item;
-                cout << "Enter quantity: ";
-                cin >> quantity;
-                ingredients.push_back(make_pair(item, quantity));
-            }
-            inv.update_recipe(name, ingredients);
+            inv.show_recipe(name);
             break;
         }
         case 4: {
             // Remove recipe
             string name;
-            cout << "Enter recipe name: ";
+            cout << "[!] Enter recipe name" << endl
+                 << "> ";
             cin >> name;
             inv.remove_recipe(name);
             break;
@@ -412,12 +519,18 @@ void loop_recipe(inventory &inv) {
         case 5: {
             // Use recipe
             string name;
-            cout << "Enter recipe name: ";
+            cout << "[!] Enter recipe name" << endl
+                 << "> ";
             cin >> name;
             inv.use_recipe(name);
             break;
         }
         case 6: {
+            // List inventory
+            inv.print_items();
+            break;
+        }
+        case 0: {
             // Exit
             return;
         }
@@ -435,11 +548,13 @@ void loop_branch(inventory &inv) {
     cout << "\nMAIN DASHBOARD" << endl
          << "1. Inventory" << endl
          << "2. Recipe" << endl
-         << "3. Exit" << endl;
+         << "0. Exit" << endl;
 
     // Get user input
+    cout << "> ";
     int choice;
     cin >> choice;
+    cout << endl;
 
     // Perform action based on user input
     switch (choice) {
@@ -453,7 +568,7 @@ void loop_branch(inventory &inv) {
             loop_recipe(inv);
             break;
         }
-        case 3: {
+        case 0: {
             // Exit
             return;
         }
