@@ -4,19 +4,14 @@
 #include <ctime>
 using namespace std;
 
-/*
-    CHECK LIST:
-    [x] Class & objects
-    [x] Attribute property & Method behavior
-    [x] Constructor
-    [x] Setter & Getter
-    [x] Encapsulation & Data hiding
-    [-] Inheritance
-    [-] Overriding
-    [+] Access Modifier / Visibility 
-    [+] Abstraction
-    [+] Polymorphism
-*/
+// Function to log activities
+void log_activity(const string& activity) {
+    ofstream log_file("activity.log", ios_base::app);
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    log_file << dt << ": " << activity << endl;
+    log_file.close();
+}
 
 // Item object class
 class Item {
@@ -46,7 +41,7 @@ public:
 
 // Recipe object class
 class Recipe {
-private:
+protected:
     vector<pair<string, int>> ingredients;
 
 public:
@@ -61,6 +56,14 @@ public:
         this->ingredients = ingredients;
     }
 
+    string get_name() {
+        return name;
+    }
+
+    int get_recipe_size() {
+        return ingredients.size();
+    }
+
     vector<pair<string, int>> get_recipe() {
         return ingredients;
     }
@@ -73,28 +76,23 @@ public:
     }
 };
 
-// SpecialRecipe object class inheriting from Recipe
-class SpecialRecipe : public Recipe {
+// GroupRecipe object class inheriting from Recipe
+class GroupRecipe : public Recipe {
+private:
+    int servings;
 public:
-    SpecialRecipe(string name, vector<pair<string, int>> ingredients)
-        : Recipe(name, ingredients) {}
+    GroupRecipe(string name, vector<pair<string, int>> ingredients, int servings)
+        : Recipe(name, ingredients), servings(servings) {}
 
     void show_recipe() override {
-        cout << "\nSPECIAL RECIPE: " << name << endl;
+        cout << "\nGROUP RECIPE: "
+                << name 
+                << " (" << servings << " servings)" <<  endl;
         for (auto& ingredient : get_recipe()) {
-            cout << ingredient.first << ": " << ingredient.second << " (Special)" << endl;
+            cout << ingredient.first << ": " << ingredient.second << endl;
         }
     }
 };
-
-// Function to log activities
-void log_activity(const string& activity) {
-    ofstream log_file("activity.log", ios_base::app);
-    time_t now = time(0);
-    char* dt = ctime(&now);
-    log_file << dt << ": " << activity << endl;
-    log_file.close();
-}
 
 // Main inventory tracking class
 class Inventory {
@@ -215,15 +213,15 @@ public:
         log_activity("Created recipe " + name);
     }
 
-    void create_special_recipe(string name, vector<pair<string, int>> ingredients) {
+    void create_group_recipe(string name, vector<pair<string, int>> ingredients, int servings) {
         if (find_recipe_index(name) != -1) {
             cout << "Recipe already exists" << endl;
-            log_activity("Failed to create special recipe " + name + ": Recipe already exists");
+            log_activity("Failed to create group recipe " + name + ": Recipe already exists");
             return;
         }
 
-        recipes.push_back(new SpecialRecipe(name, ingredients));
-        log_activity("Created special recipe " + name);
+        recipes.push_back(new GroupRecipe(name, ingredients, servings));
+        log_activity("Created group recipe " + name);
     }
 
     bool check_recipe(string name) {
@@ -266,8 +264,11 @@ public:
 
     void print_recipes() {
         cout << "\nRECIPES:" << endl;
-        for (int i = 0; i < recipes.size(); i++)
-            recipes[i]->show_recipe();
+        for (int i = 0; i < recipes.size(); i++){
+            cout << recipes[i]->get_name()
+                 << " (" << recipes[i]->get_recipe_size() << " ingredients)" << endl;
+        }
+
         cout << endl;
         log_activity("Displayed all recipes");
     }
@@ -288,7 +289,7 @@ void display_menu_item() {
 void display_menu_recipe() {
     cout << "\nRECIPE DASHBOARD"
         << "\n1. Create Recipe"
-        << "\n2. Create Special Recipe"
+        << "\n2. Create Group Recipe"
         << "\n3. Update Recipe"
         << "\n4. Remove Recipe"
         << "\n5. Find Recipe"
@@ -404,7 +405,7 @@ void loop_item(Inventory& tracker) {
 void loop_recipe(Inventory& tracker) {
     int choice;
     string name, item;
-    int quantity;
+    int quantity, servings;
     vector<pair<string, int>> ingredients;
 
     display_menu_recipe();
@@ -441,9 +442,13 @@ void loop_recipe(Inventory& tracker) {
         break;
 
     case 2:
-        cout << "[!] Enter special recipe name" << endl
+        cout << "[!] Enter group recipe name" << endl
                 << "> ";
         cin >> name;
+
+        cout << "[!] Enter servings" << endl
+                << "> ";
+        cin >> servings;
 
         cout << "[!] Enter ingredient & quantity" << endl
                 << "  Syntax: <item> <quantity>" << endl
@@ -463,7 +468,7 @@ void loop_recipe(Inventory& tracker) {
             // Pushes item to vector
             ingredients.push_back(make_pair(item, quantity));
         }
-        tracker.create_special_recipe(name, ingredients);
+        tracker.create_group_recipe(name, ingredients, servings);
         break;
 
     case 3:
