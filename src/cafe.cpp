@@ -306,6 +306,29 @@ public:
         cout << endl;
         log_activity("Displayed all recipes");
     }
+
+    // Use recipe
+    void use_recipe(string name) {
+        if (find_recipe_index(name) != -1) {
+            for (auto& ingredient : recipes[find_recipe_index(name)]->get_recipe()) {
+                if (!check_item(ingredient.first, ingredient.second)) {
+                    cout << "Not enough ingredients" << endl;
+                    log_activity("Failed to use recipe " + name + ": Not enough ingredients");
+                    return;
+                }
+            }
+
+            for (auto& ingredient : recipes[find_recipe_index(name)]->get_recipe()) {
+                remove_item(ingredient.first, ingredient.second);
+            }
+
+            log_activity("Used recipe " + name);
+            return;
+        }
+
+        cout << "Recipe not found" << endl;
+        log_activity("Failed to use recipe " + name + ": Recipe not found");
+    }
 };
 
 //==============//
@@ -331,6 +354,7 @@ void display_menu_recipe() {
         << "\n4. Remove Recipe"
         << "\n5. Find Recipe"
         << "\n6. Print Recipes"
+        << "\n7. Use Recipe"
         << "\n0. Exit" << endl;
 }
 
@@ -573,6 +597,14 @@ void loop_recipe(Inventory& tracker) {
     case 6:
         // Print recipes
         tracker.print_recipes();
+        break;
+
+    case 7:
+        // Use recipe
+        cout << "[!] Enter recipe name" << endl
+                << "> ";
+        cin >> name;
+        tracker.use_recipe(name);
         break;
 
     case 0:
