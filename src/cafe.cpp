@@ -260,136 +260,292 @@ public:
 };
 
 // Interactive Menu
+void display_menu_item() {
+    cout << "\nITEM DASHBOARD"
+        << "\n1. Add Item"
+        << "\n2. Multi-Add Item"
+        << "\n3. Remove Item"
+        << "\n4. Multi-Remove Item"
+        << "\n5. Find Item"
+        << "\n6. Print Items"
+        << "\n0. Exit" << endl;
+}
+
+void display_menu_recipe() {
+    cout << "\nRECIPE DASHBOARD"
+        << "\n1. Create Recipe"
+        << "\n2. Create Special Recipe"
+        << "\n3. Update Recipe"
+        << "\n4. Remove Recipe"
+        << "\n5. Find Recipe"
+        << "\n6. Print Recipes"
+        << "\n0. Exit" << endl;
+}
+
 void display_menu() {
-    cout << "\n1. Add Item"
-        << "\n2. Remove Item"
-        << "\n3. Show Item"
-        << "\n4. Print Items"
-        << "\n5. Create Recipe"
-        << "\n6. Create Special Recipe"
-        << "\n7. Update Recipe"
-        << "\n8. Remove Recipe"
-        << "\n9. Show Recipe"
-        << "\n10. Print Recipes"
-        << "\n11. Exit"
-        << "\nEnter your choice: ";
+    cout << "\nCAFE MANAGEMENT SYSTEM"
+        << "\n1. Item Dashboard"
+        << "\n2. Recipe Dashboard"
+        << "\n0. Exit" << endl;
+}
+
+void loop_item(Inventory& tracker) {
+    int choice;
+    string item;
+    int quantity;
+    vector<pair<string, int>> items;
+
+    display_menu_item();
+
+    cout << "> ";
+    cin >> choice;
+    cout << endl;
+
+    switch (choice) {
+    case 1: {
+        // Add item
+        cout << "[!] Enter item name & quanity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "> ";
+        cin >> item >> quantity;
+        tracker.add_item(item, quantity);
+        break;
+    }
+    case 2:
+        // Multi-Add item
+        cout << "[!] Enter item name & quanity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "  Enter 'exit' to stop" << endl
+                << "Example: " << endl
+                << "  sugar 50" << endl
+                << "  exit" << endl;
+
+        // Creates vector for items
+        while(1) {
+            // Loops until user enters 'exit'
+            cout << "> ";
+            cin >> item;
+            if (item == "exit") break;
+            cin >> quantity;
+
+            // Pushes item to vector
+            items.push_back(make_pair(item, quantity));
+        }
+        tracker.add_item(items);
+        break;
+
+    case 3:
+        // Remove item
+        cout << "[!] Enter item name & quanity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "> ";
+        cin >> item >> quantity;
+        tracker.remove_item(item, quantity);
+        break;
+
+    case 4:
+        // Multi-Remove item
+        cout << "[!] Enter item name & quanity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "  Enter 'exit' to stop" << endl
+                << "Example: " << endl
+                << "  sugar 50" << endl
+                << "  exit" << endl;
+
+        // Creates vector for items
+        while(1) {
+            // Loops until user enters 'exit'
+            cout << "> ";
+            cin >> item;
+            if (item == "exit") break;
+            cin >> quantity;
+
+            // Pushes item to vector
+            items.push_back(make_pair(item, quantity));
+        }
+        tracker.remove_item(items);
+        break;
+
+    case 5:
+        cout << "[!] Enter item name" << endl
+                << "> ";
+        cin >> item;
+        tracker.show_item(item);
+        break;
+
+    case 6:
+        tracker.print_items();
+        break;
+
+    case 0:
+        cout << "Exiting..." << endl;
+        return;
+
+    default:
+        cout << "Invalid choice. Please try again." << endl;
+    }
+    loop_item(tracker);
+}
+
+void loop_recipe(Inventory& tracker) {
+    int choice;
+    string name, item;
+    int quantity;
+    vector<pair<string, int>> ingredients;
+
+    display_menu_recipe();
+
+    cout << "> ";
+    cin >> choice;
+    cout << endl;
+
+    switch (choice) {
+    case 1:
+        cout << "[!] Enter recipe name" << endl
+                << "> ";
+        cin >> name;
+
+        cout << "[!] Enter ingredient & quantity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "  Enter 'exit' to stop" << endl
+                << "Example: " << endl
+                << "  sugar 50" << endl
+                << "  exit" << endl;
+
+        // Creates vector for ingredients
+        while(1) {
+            // Loops until user enters 'exit'
+            cout << "> ";
+            cin >> item;
+            if (item == "exit") break;
+            cin >> quantity;
+
+            // Pushes item to vector
+            ingredients.push_back(make_pair(item, quantity));
+        }
+        tracker.create_recipe(name, ingredients);
+        break;
+
+    case 2:
+        cout << "[!] Enter special recipe name" << endl
+                << "> ";
+        cin >> name;
+
+        cout << "[!] Enter ingredient & quantity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "  Enter 'exit' to stop" << endl
+                << "Example: " << endl
+                << "  sugar 50" << endl
+                << "  exit" << endl;
+
+        // Creates vector for ingredients
+        while(1) {
+            // Loops until user enters 'exit'
+            cout << "> ";
+            cin >> item;
+            if (item == "exit") break;
+            cin >> quantity;
+
+            // Pushes item to vector
+            ingredients.push_back(make_pair(item, quantity));
+        }
+        tracker.create_special_recipe(name, ingredients);
+        break;
+
+    case 3:
+        cout << "[!] Enter recipe name" << endl
+                << "> ";
+        cin >> name;
+
+        if (!tracker.check_recipe(name)) {
+            cout << "Recipe not found" << endl;
+            break;
+        }
+
+        cout << "[!] Enter ingredient & quantity" << endl
+                << "  Syntax: <item> <quantity>" << endl
+                << "  Enter 'exit' to stop" << endl
+                << "Example: " << endl
+                << "  sugar 50" << endl
+                << "  exit" << endl;
+        
+        // Creates vector for ingredients
+        while(1) {
+            // Loops until user enters 'exit'
+            cout << "> ";
+            cin >> item;
+            if (item == "exit") break;
+            cin >> quantity;
+
+            // Pushes item to vector
+            ingredients.push_back(make_pair(item, quantity));
+        }
+        tracker.update_recipe(name, ingredients);
+
+    case 4:
+        cout << "[!] Enter recipe name" << endl
+                << "> ";
+        cin >> name;
+        tracker.remove_recipe(name);
+        break;
+
+    case 5:
+        cout << "[!] Enter recipe name" << endl
+                << "> ";
+        cin >> name;
+        tracker.show_recipe(name);
+        break;
+
+    case 6:
+        tracker.print_recipes();
+        break;
+
+    case 0:
+        cout << "Exiting..." << endl;
+        return;
+
+    default:
+        cout << "Invalid choice. Please try again." << endl;
+        break;
+    }
+
+    loop_recipe(tracker);
+}
+
+void loop_main(Inventory& tracker) {
+    int choice;
+
+    display_menu();
+
+    cout << "> ";
+    cin >> choice;
+    cout << endl;
+
+    switch (choice) {
+    case 1:
+        loop_item(tracker);
+        break;
+
+    case 2:
+        loop_recipe(tracker);
+        break;
+
+    case 0:
+        cout << "Exiting..." << endl;
+        return;
+
+    default:
+        cout << "Invalid choice. Please try again." << endl;
+    }
+
+    loop_main(tracker);
 }
 
 int main() {
     Inventory tracker;
     int choice;
 
-    do {
-        display_menu();
-        cin >> choice;
-
-        string name;
-        int quantity;
-        vector<pair<string, int>> ingredients;
-        int num_ingredients;
-        string ingredient_name;
-        int ingredient_quantity;
-
-        switch (choice) {
-        case 1:
-            cout << "Enter item name: ";
-            cin >> name;
-            cout << "Enter quantity: ";
-            cin >> quantity;
-            tracker.add_item(name, quantity);
-            break;
-
-        case 2:
-            cout << "Enter item name: ";
-            cin >> name;
-            cout << "Enter quantity: ";
-            cin >> quantity;
-            tracker.remove_item(name, quantity);
-            break;
-
-        case 3:
-            cout << "Enter item name: ";
-            cin >> name;
-            tracker.show_item(name);
-            break;
-
-        case 4:
-            tracker.print_items();
-            break;
-
-        case 5:
-            cout << "Enter recipe name: ";
-            cin >> name;
-            cout << "Enter number of ingredients: ";
-            cin >> num_ingredients;
-            for (int i = 0; i < num_ingredients; i++) {
-                cout << "Enter ingredient name: ";
-                cin >> ingredient_name;
-                cout << "Enter quantity: ";
-                cin >> ingredient_quantity;
-                ingredients.push_back(make_pair(ingredient_name, ingredient_quantity));
-            }
-            tracker.create_recipe(name, ingredients);
-            break;
-
-        case 6:
-            cout << "Enter special recipe name: ";
-            cin >> name;
-            cout << "Enter number of ingredients: ";
-            cin >> num_ingredients;
-            for (int i = 0; i < num_ingredients; i++) {
-                cout << "Enter ingredient name: ";
-                cin >> ingredient_name;
-                cout << "Enter quantity: ";
-                cin >> ingredient_quantity;
-                ingredients.push_back(make_pair(ingredient_name, ingredient_quantity));
-            }
-            tracker.create_special_recipe(name, ingredients);
-            break;
-
-        case 7:
-            cout << "Enter recipe name: ";
-            cin >> name;
-            if (tracker.check_recipe(name)) {
-                cout << "Enter number of ingredients: ";
-                cin >> num_ingredients;
-                for (int i = 0; i < num_ingredients; i++) {
-                    cout << "Enter ingredient name: ";
-                    cin >> ingredient_name;
-                    cout << "Enter quantity: ";
-                    cin >> ingredient_quantity;
-                    ingredients.push_back(make_pair(ingredient_name, ingredient_quantity));
-                }
-                tracker.update_recipe(name, ingredients);
-            } else {
-                cout << "Recipe not found" << endl;
-            }
-            break;
-
-        case 8:
-            cout << "Enter recipe name: ";
-            cin >> name;
-            tracker.remove_recipe(name);
-            break;
-
-        case 9:
-            cout << "Enter recipe name: ";
-            cin >> name;
-            tracker.show_recipe(name);
-            break;
-
-        case 10:
-            tracker.print_recipes();
-            break;
-
-        case 11:
-            cout << "Exiting..." << endl;
-            break;
-
-        default:
-            cout << "Invalid choice. Please try again." << endl;
-        }
-    } while (choice != 11);
+    loop_main(tracker);
 
     return 0;
 }
