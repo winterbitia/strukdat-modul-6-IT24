@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <ctime>
+#include <iomanip>
+#include <sstream>
 using namespace std;
 
 // Function to log activities
@@ -335,6 +337,49 @@ public:
         cout << "Recipe not found" << endl;
         log_activity("Failed to use recipe " + name + ": Recipe not found");
     }
+
+    // Export items to CSV
+    void export_items_to_csv(const string& filename) {
+        ofstream csv_file(filename);
+        if (!csv_file.is_open()) {
+            cout << "Failed to open CSV file for writing." << endl;
+            return;
+        }
+
+        csv_file << "Item Name,Quantity" << endl;
+        for (const auto& item : items) {
+            csv_file << item.name << "," << item.get_quantity() << endl;
+        }
+
+        csv_file.close();
+        cout << "Items exported to CSV successfully." << endl;
+        log_activity("Exported items to CSV file: " + filename);
+    }
+
+    // Import items from CSV
+    void import_items_from_csv(const string& filename) {
+        ifstream csv_file(filename);
+        if (!csv_file.is_open()) {
+            cout << "Failed to open CSV file for reading." << endl;
+            return;
+        }
+
+        items.clear(); // Clear existing items
+        string line;
+        getline(csv_file, line); // Skip header line
+        while (getline(csv_file, line)) {
+            stringstream ss(line);
+            string item_name;
+            int quantity;
+            if (getline(ss, item_name, ',') && ss >> quantity) {
+                items.push_back(Item(item_name, quantity));
+            }
+        }
+
+        csv_file.close();
+        cout << "Items imported from CSV successfully." << endl;
+        log_activity("Imported items from CSV file: " + filename);
+    }
 };
 
 //==============//
@@ -349,6 +394,8 @@ void display_menu_item() {
         << "\n4. Multi-Remove Item"
         << "\n5. Find Item"
         << "\n6. Print Items"
+        << "\n7. Export Items to CSV"
+        << "\n8. Import Items from CSV"
         << "\n0. Exit" << endl;
 }
 
@@ -464,6 +511,22 @@ void loop_item(Inventory& tracker) {
     case 6:
         // Print items
         tracker.print_items();
+        break;
+
+    case 7:
+        // Export items to CSV
+        cout << "[!] Enter CSV filename" << endl
+             << "> ";
+        cin >> item;
+        tracker.export_items_to_csv(item);
+        break;
+
+    case 8:
+        // Import items from CSV
+        cout << "[!] Enter CSV filename" << endl
+             << "> ";
+        cin >> item;
+        tracker.import_items_from_csv(item);
         break;
 
     case 0:
@@ -650,16 +713,14 @@ void loop_main(Inventory& tracker) {
 
     default:
         cout << "Invalid choice. Please try again." << endl;
+        break;
     }
 
     loop_main(tracker);
 }
 
+// Main function
 int main() {
     Inventory tracker;
-    int choice;
-
     loop_main(tracker);
-
     return 0;
-}
