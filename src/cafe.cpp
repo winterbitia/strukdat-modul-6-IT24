@@ -21,19 +21,23 @@ private:
 public:
     string name;
 
+    // Constructor
     Item(string name, int quantity) {
         this->name = name;
         this->quantity = quantity;
     }
 
+    // Add quantity
     void add(int q) {
         quantity += q;
     }
 
+    // Remove quantity
     void remove(int q) {
         quantity -= q;
     }
 
+    // Get quantity
     int get_quantity() {
         return quantity;
     }
@@ -47,27 +51,33 @@ protected:
 public:
     string name;
 
+    // Constructor
     Recipe(string name, vector<pair<string, int>> ingredients) {
         this->name = name;
         this->ingredients = ingredients;
     }
 
+    // Update recipe
     void update(vector<pair<string, int>> ingredients) {
         this->ingredients = ingredients;
     }
 
+    // Get recipe name
     string get_name() {
         return name;
     }
 
+    // Get recipe size
     int get_recipe_size() {
         return ingredients.size();
     }
 
+    // Get recipe
     vector<pair<string, int>> get_recipe() {
         return ingredients;
     }
 
+    // Show recipe
     virtual void show_recipe() {
         cout << "\nRECIPE: " << name << endl;
         for (auto& ingredient : ingredients) {
@@ -81,9 +91,11 @@ class GroupRecipe : public Recipe {
 private:
     int servings;
 public:
+    // Constructor
     GroupRecipe(string name, vector<pair<string, int>> ingredients, int servings)
         : Recipe(name, ingredients), servings(servings) {}
 
+    // Show recipe
     void show_recipe() override {
         cout << "\nGROUP RECIPE: "
                 << name 
@@ -115,6 +127,11 @@ private:
     }
 
 public:
+    //=================//
+    // ITEM OPERATIONS //
+    //=================//
+
+    // Add item (single)
     void add_item(string name, int quantity) {
         if (find_item_index(name) != -1) {
             items[find_item_index(name)].add(quantity);
@@ -126,6 +143,7 @@ public:
         log_activity("Added new item " + name + " with quantity " + to_string(quantity));
     }
 
+    // Add item (multiple)
     void add_item(vector<pair<string, int>> input) {
         for (int i = 0; i < input.size(); i++) {
             if (find_item_index(input[i].first) != -1)
@@ -137,6 +155,7 @@ public:
         log_activity("Added multiple items to inventory");
     }
 
+    // Check item
     bool check_item(string name, int quantity) {
         if (find_item_index(name) != -1) {
             if (items[find_item_index(name)].get_quantity() < quantity)
@@ -146,6 +165,7 @@ public:
         return false;
     }
 
+    // Remove item (single)
     void remove_item(string item, int quantity) {
         if (find_item_index(item) != -1) {
             if (items[find_item_index(item)].get_quantity() < quantity) {
@@ -164,6 +184,7 @@ public:
         }
     }
 
+    // Remove item (multiple)
     void remove_item(vector<pair<string, int>> items) {
         for (int i = 0; i < items.size(); i++) {
             if (find_item_index(items[i].first) != -1) {
@@ -181,6 +202,7 @@ public:
         log_activity("Removed multiple items from inventory");
     }
 
+    // Show item
     void show_item(string item) {
         if (find_item_index(item) != -1) {
             cout << "\nITEM: " << item << endl
@@ -193,6 +215,7 @@ public:
         log_activity("Failed to display item " + item + ": Item not found");
     }
 
+    // Print items
     void print_items() {
         cout << "\nINVENTORY:" << endl;
         for (int i = 0; i < items.size(); i++)
@@ -202,6 +225,11 @@ public:
         log_activity("Displayed all items in inventory");
     }
 
+    //===================//
+    // RECIPE OPERATIONS //
+    //===================//
+
+    // Create recipe
     void create_recipe(string name, vector<pair<string, int>> ingredients) {
         if (find_recipe_index(name) != -1) {
             cout << "Recipe already exists" << endl;
@@ -213,6 +241,7 @@ public:
         log_activity("Created recipe " + name);
     }
 
+    // Create group recipe
     void create_group_recipe(string name, vector<pair<string, int>> ingredients, int servings) {
         if (find_recipe_index(name) != -1) {
             cout << "Recipe already exists" << endl;
@@ -224,11 +253,13 @@ public:
         log_activity("Created group recipe " + name);
     }
 
+    // Check recipe
     bool check_recipe(string name) {
         if (find_recipe_index(name) != -1) return true;
         return false;
     }
 
+    // Update recipe
     void update_recipe(string name, vector<pair<string, int>> ingredients) {
         if (find_recipe_index(name) != -1) {
             recipes[find_recipe_index(name)]->update(ingredients);
@@ -240,6 +271,7 @@ public:
         log_activity("Failed to update recipe " + name + ": Recipe not found");
     }
 
+    // Remove recipe
     void remove_recipe(string name) {
         if (find_recipe_index(name) != -1) {
             recipes.erase(recipes.begin() + find_recipe_index(name));
@@ -251,6 +283,7 @@ public:
         log_activity("Failed to remove recipe " + name + ": Recipe not found");
     }
 
+    // Show recipe
     void show_recipe(string name) {
         if (find_recipe_index(name) != -1) {
             recipes[find_recipe_index(name)]->show_recipe();
@@ -262,6 +295,7 @@ public:
         log_activity("Failed to display recipe " + name + ": Recipe not found");
     }
 
+    // Print recipes
     void print_recipes() {
         cout << "\nRECIPES:" << endl;
         for (int i = 0; i < recipes.size(); i++){
@@ -274,7 +308,10 @@ public:
     }
 };
 
-// Interactive Menu
+//==============//
+// MENU DISPLAY //
+//==============//
+
 void display_menu_item() {
     cout << "\nITEM DASHBOARD"
         << "\n1. Add Item"
@@ -304,6 +341,11 @@ void display_menu() {
         << "\n0. Exit" << endl;
 }
 
+//===========================//
+// USER INTERFACE OPERATIONS //
+//===========================//
+
+// Loops for item operations
 void loop_item(Inventory& tracker) {
     int choice;
     string item;
@@ -382,6 +424,7 @@ void loop_item(Inventory& tracker) {
         break;
 
     case 5:
+        // Find item
         cout << "[!] Enter item name" << endl
                 << "> ";
         cin >> item;
@@ -389,6 +432,7 @@ void loop_item(Inventory& tracker) {
         break;
 
     case 6:
+        // Print items
         tracker.print_items();
         break;
 
@@ -402,6 +446,7 @@ void loop_item(Inventory& tracker) {
     loop_item(tracker);
 }
 
+// Loops for recipe operations
 void loop_recipe(Inventory& tracker) {
     int choice;
     string name, item;
@@ -416,10 +461,12 @@ void loop_recipe(Inventory& tracker) {
 
     switch (choice) {
     case 1:
+        // Get recipe name
         cout << "[!] Enter recipe name" << endl
                 << "> ";
         cin >> name;
 
+        // Instructions
         cout << "[!] Enter ingredient & quantity" << endl
                 << "  Syntax: <item> <quantity>" << endl
                 << "  Enter 'exit' to stop" << endl
@@ -442,14 +489,17 @@ void loop_recipe(Inventory& tracker) {
         break;
 
     case 2:
+        // Get recipe name
         cout << "[!] Enter group recipe name" << endl
                 << "> ";
         cin >> name;
 
+        // Get servings
         cout << "[!] Enter servings" << endl
                 << "> ";
         cin >> servings;
 
+        // Instructions
         cout << "[!] Enter ingredient & quantity" << endl
                 << "  Syntax: <item> <quantity>" << endl
                 << "  Enter 'exit' to stop" << endl
@@ -472,15 +522,18 @@ void loop_recipe(Inventory& tracker) {
         break;
 
     case 3:
+        // Get recipe name
         cout << "[!] Enter recipe name" << endl
                 << "> ";
         cin >> name;
 
+        // Check if recipe exists
         if (!tracker.check_recipe(name)) {
             cout << "Recipe not found" << endl;
             break;
         }
 
+        // Instructions
         cout << "[!] Enter ingredient & quantity" << endl
                 << "  Syntax: <item> <quantity>" << endl
                 << "  Enter 'exit' to stop" << endl
@@ -502,6 +555,7 @@ void loop_recipe(Inventory& tracker) {
         tracker.update_recipe(name, ingredients);
 
     case 4:
+        // Remove recipe
         cout << "[!] Enter recipe name" << endl
                 << "> ";
         cin >> name;
@@ -509,6 +563,7 @@ void loop_recipe(Inventory& tracker) {
         break;
 
     case 5:
+        // Show recipe
         cout << "[!] Enter recipe name" << endl
                 << "> ";
         cin >> name;
@@ -516,6 +571,7 @@ void loop_recipe(Inventory& tracker) {
         break;
 
     case 6:
+        // Print recipes
         tracker.print_recipes();
         break;
 
@@ -531,6 +587,7 @@ void loop_recipe(Inventory& tracker) {
     loop_recipe(tracker);
 }
 
+// Main loop
 void loop_main(Inventory& tracker) {
     int choice;
 
