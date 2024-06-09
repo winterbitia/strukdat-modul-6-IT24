@@ -4,6 +4,20 @@
 #include <ctime>
 using namespace std;
 
+/*
+    CHECK LIST:
+    [x] Class & objects
+    [x] Attribute property & Method behavior
+    [x] Constructor
+    [x] Setter & Getter
+    [x] Encapsulation & Data hiding
+    [-] Inheritance
+    [-] Overriding
+    [+] Access Modifier / Visibility 
+    [+] Abstraction
+    [+] Polymorphism
+*/
+
 // Item object class
 class Item {
 private:
