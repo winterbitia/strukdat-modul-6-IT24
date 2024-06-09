@@ -8,8 +8,14 @@ using namespace std;
 void log_activity(const string& activity) {
     ofstream log_file("activity.log", ios_base::app);
     time_t now = time(0);
-    char* dt = ctime(&now);
-    log_file << dt << ": " << activity << endl;
+    tm* ltm = localtime(&now);
+    log_file << "[" << 1900 + ltm->tm_year << "-"
+             << setfill('0') << setw(2) << 1 + ltm->tm_mon << "-"
+             << setfill('0') << setw(2) << ltm->tm_mday << " "
+             << setfill('0') << setw(2) << ltm->tm_hour << ":"
+             << setfill('0') << setw(2) << ltm->tm_min << ":"
+             << setfill('0') << setw(2) << ltm->tm_sec << "] "
+             << activity << endl;
     log_file.close();
 }
 
