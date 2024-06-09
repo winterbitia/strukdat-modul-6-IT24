@@ -347,7 +347,7 @@ public:
         }
 
         csv_file << "Item Name,Quantity" << endl;
-        for (const auto& item : items) {
+        for (auto& item : items) {
             csv_file << item.name << "," << item.get_quantity() << endl;
         }
 
@@ -721,6 +721,9 @@ void loop_main(Inventory& tracker) {
 
 // Main function
 int main() {
+
     Inventory tracker;
     loop_main(tracker);
+
     return 0;
+}
